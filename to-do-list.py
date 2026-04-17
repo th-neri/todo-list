@@ -16,7 +16,7 @@ def view_tasks(tasks):
         for index, task in enumerate(task_list, start=1):
             status = "Completed" if task["completed"] else "Pending"
             due_date = datetime.strptime(task['due'], "%Y-%m-%d").strftime("%B %d, %Y") 
-            print(f"{index}. {task["description"]} | Due: {due_date} | {status}")
+            print(f"{index}. {task["description"]} | Due: {due_date} | Priority: {task["priority"]} | {status}")
     
 def save_tasks(tasks):
     with open(file_name, "w") as file:
@@ -25,8 +25,9 @@ def save_tasks(tasks):
 def add_tasks(tasks):
     description = input("Write the desired task: ").strip()
     date_input = input("Write the deadline(YYYY-MM-DD): ").strip()
-    if description and date_input:
-        tasks["tasks"].append({"description": description, "due": date_input, "completed": False})
+    priority = input("What is the priority of the task(Low, Medium or High)? ").strip() or "Medium"
+    if description and date_input and priority:
+        tasks["tasks"].append({"description": description, "due": date_input, "priority": priority, "completed": False})
         save_tasks(tasks)
         print("Task saved successfully.")
     else:
