@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 file_name = "to_do_list.json"
 
@@ -11,20 +12,21 @@ def view_tasks(tasks):
     if len(task_list) == 0:
         print("No tasks avaiable.")
     else:
-        print("\nYour to-do list")
+        print("\n---Your to-do list---")
         for index, task in enumerate(task_list, start=1):
             status = "Completed" if task["completed"] else "Pending"
-            print(f"{index}. {task["description"]} | {status}")
+            due_date = datetime.strptime(task['due'], "%Y-%m-%d").strftime("%B %d, %Y") 
+            print(f"{index}. {task["description"]} | Due: {due_date} | {status}")
     
-
 def save_tasks(tasks):
     with open(file_name, "w") as file:
         json.dump(tasks, file)
 
 def add_tasks(tasks):
     description = input("Write the desired task: ").strip()
-    if description:
-        tasks["tasks"].append({"description": description, "completed": False})
+    date_input = input("Write the deadline(YYYY-MM-DD): ").strip()
+    if description and date_input:
+        tasks["tasks"].append({"description": description, "due": date_input, "completed": False})
         save_tasks(tasks)
         print("Task saved successfully.")
     else:
@@ -39,7 +41,7 @@ def delete_tasks(tasks):
         save_tasks(tasks)
         print(f"{task_no} deleted successfully.")
     else:
-        print("Invalid number.")
+        print("Invalid number. Try Again")
 
 def complete_task(tasks):
     view_tasks(tasks)
@@ -47,21 +49,34 @@ def complete_task(tasks):
     task_no = int(input("Enter the task number to mark as complete: ").strip())
     if 1 <= task_no <= len(tasks["tasks"]):
         tasks["tasks"][task_no - 1]["completed"] = True
+        save_tasks(tasks)
         print("Task finished and marked as complete.")
     else:
-        print("Invalid number")
+        print("Invalid number. Try again")
 
+def undo_complete_task(tasks):
+    view_tasks(tasks)
+    task_no = tasks["tasks"]
+    task_no = int(input("Enter the task you want to mark as pending again: ").strip())
+    if 1 <= task_no <= len(tasks["tasks"]):
+        tasks["tasks"][task_no -1]["completed"] = False
+        save_tasks(tasks)
+        print(f"Task {task_no} marked as pending again.")
+    else:
+        print("Invalid number. Try again.")
+        
 def main():
     tasks = load_tasks()
 
     while True:
-        print("\n ---To-do list---")
+        print("\n ---To-Do list---")
         print("1. View list")
-        print("2. Add list")
-        print("3. Delete list")
+        print("2. Add task")
+        print("3. Delete task")
         print("4. Save list")
-        print("5. Complete list")
-        print("6. Exit\n")
+        print("5. Complete task")
+        print("6. Mark it as pending again")
+        print("7. Exit\n")
 
         choice = input("Enter your choice: ").strip()
         
@@ -76,6 +91,8 @@ def main():
         elif choice == "5":
             complete_task(tasks)
         elif choice == "6":
+            undo_complete_task(tasks)
+        elif choice == "7":
             print("Have a nice day! :)")
             break
         else:
