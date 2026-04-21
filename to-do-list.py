@@ -7,6 +7,10 @@ def load_tasks():
     with open(file_name, "r") as file:
         return json.load(file)
 
+def save_tasks(tasks):
+    with open(file_name, "w") as file:
+        json.dump(tasks, file)
+
 def view_tasks(tasks):
     task_list = tasks["tasks"]
     if len(task_list) == 0:
@@ -16,12 +20,8 @@ def view_tasks(tasks):
         for index, task in enumerate(task_list, start=1):
             status = "Completed" if task["completed"] else "Pending"
             due_date = datetime.strptime(task['due'], "%Y-%m-%d").strftime("%B %d, %Y") 
-            print(f"{index}. {task["description"]} | Due: {due_date} | Priority: {task["priority"]} | {status}")
+            print(f"{index}. {task["description"]} | Deadline: {due_date} | Priority: {task["priority"]} | {status}")
     
-def save_tasks(tasks):
-    with open(file_name, "w") as file:
-        json.dump(tasks, file)
-
 def add_tasks(tasks):
     description = input("Write the desired task: ").strip()
     date_input = input("Write the deadline(YYYY-MM-DD): ").strip()
