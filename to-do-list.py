@@ -14,7 +14,7 @@ def save_tasks(tasks):
 def view_tasks(tasks):
     task_list = tasks["tasks"]
     if len(task_list) == 0:
-        print("No tasks avaiable.")
+        print("No tasks available.")
     else:
         print("\n---Your to-do list---")
         for index, task in enumerate(task_list, start=1):
